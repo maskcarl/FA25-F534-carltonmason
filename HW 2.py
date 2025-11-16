@@ -49,25 +49,24 @@ y_train, y_val = train[['selling_price']], val[['selling_price']]
 # Importing models
 from sklearn.linear_model import LinearRegression
 
-lr_train=LinearRegression()
-lr_train.fit(X_train,y_train)
+lr=LinearRegression()
+lr.fit(X_train,y_train)
 
 LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1)
 
 
 #Calculate the MSE of the model on training set and print out
-y_pred = lr_train.predict(X_train)
-mse = mean_squared_error(y_train, y_pred)
-print(mse)
+from sklearn.metrics import mean_squared_error
+y_pred_train = lr.predict(X_train)
+mse_train = mean_squared_error(y_train, y_pred_train)
+print(mse_train)
 
 
 #Apply the model to the observations in validation set
-lr_val=LinearRegression()
-lr_val.fit(X_val,y_val)
+y_pred_val = lr.predict(X_val)
 
 LinearRegression(copy_X=True, fit_intercept=True, n_jobs=1)
 
 #Calculate the MSEs of the model on validation set and print out
-y_pred1=lr_val.predict(X_val)
-mse = mean_squared_error(y_val,y_pred1)
-print(mse)
+mse_val = mean_squared_error(y_val,y_pred_val)
+print(mse_val)
