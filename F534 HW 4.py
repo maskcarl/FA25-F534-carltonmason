@@ -15,11 +15,13 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
+from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
 from sklearn.metrics import accuracy_score, recall_score, precision_score, f1_score
 from sklearn.metrics import confusion_matrix, roc_auc_score, roc_curve
+
 
 #Read data
 df = pd.read_csv("LC_20.zip")
@@ -58,12 +60,20 @@ y_test  = test_df["loan_status"]
 X_val   = val_df[["annual_inc", "dti", "fico_range_low", "open_acc", "revol_util", "total_pymnt"]]
 y_val   = val_df["loan_status"]
 
+#Scale data
+scaler = StandardScaler()
+X_train_scaled = scaler.fit_transform(X_train)
+
+X_test_scaled = scaler.transform(X_test)
+X_val_scaled = scaler.transform(X_val)
+
+
 #Logistic regression
 model = LogisticRegression(max_iter=5000)
-model.fit(X_train,y_train)
+model.fit(X_train_scaled,y_train)
 
 #Get predict probabilities
-prob = model.predict_proba(X_test)[:,1]
+prob = model.predict_proba(X_test_scaled)[:,1]
 
 #Checking thresholds
 thresholds = [0.65,0.7,0.75,0.8,0.85]
@@ -81,7 +91,7 @@ best_thresh = None
 best_cm = None
 
 for i in thresholds:
-    preds = np.where(model.predict_proba(X_test)[:,1] > i, 1, 0)
+    preds = np.where(model.predict_proba(X_test_scaled)[:,1] > i, 1, 0)
 
     cm = confusion_matrix(y_test, preds, labels=[1, 0])
 
